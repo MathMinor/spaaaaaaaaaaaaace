@@ -147,6 +147,9 @@ void setup() {
   //for (int i = 0; i < 5; i++) {
               
 //}
+ Serial.println("Please select as follows:");
+ Serial.println(" -a- for camera");
+ Serial.println(" -b- for sensors");
 }
 int i=0;
 File imgFile;
@@ -155,52 +158,114 @@ File dataFile;
 
 void loop() {
      
+    if (Serial.available() > 0) {
+     
+       int inByte = Serial.read();
+    switch (inByte) {
+       case 'a':
+         //digitalWrite(2, HIGH);
+         //Serial.println("It was A!");
+         camera();
+         break;
+       case 'b':
+         //digitalWrite(3, HIGH);
+         //Serial.println("It was B!");
+         sensors();
+         break;
+       case 'c':
+         //digitalWrite(4, HIGH);
+         Serial.println("It was C!");
+         break;
+       case 'd':
+         //digitalWrite(5, HIGH);
+         Serial.println("It was D!");
+         break;
+       case 'e':
+         //digitalWrite(6, HIGH);
+         Serial.println("It was E!");
+         break;
+       default:
+          Serial.println("It was incorrect!");
+  }
+}           
+
+  
+     delay(1000);
+}
+
+//Change celsius to Fahrenheit
+double CtF (double celsius) {
+  return ((celsius * 1.8) + 32);
+}
+
+void camera(){
+              // Create an image with the name IMAGExx.JPG
               cam.begin();
               cam.setImageSize(VC0706_640x480);
               char filename[13];
               strcpy(filename, "IMAGExx.JPG");
-              //for(int i = 0; i<5 ; i++)
-              //{
-                filename[5] = '0' + i/10;
-                filename[6] = '0' + i%10;
-                //if(!SD.exist(filename)){
-                //  break;
-                //}
-              
+      
+              filename[5] = '0' + i/10;
+              filename[6] = '0' + i%10;
+              i++;
+              // create if does not exist, do not open existing, write, sync after write
+              //if (! SD.exists(filename)) {
+                //SD.open(filename);
+                //SD.close();
               //}
-              Serial.println("Snap...");
-              cam.takePicture();//) 
-              imgFile = SD.open(filename, FILE_WRITE);
-              Serial.println(F("Taking photo..."));
-              uint16_t jpglen = cam.frameLength();
-              int32_t time = millis();
-              pinMode(8, OUTPUT);
-              byte wCount = 0; // For counting # of writes
-              while (jpglen > 0) {
+              // Coppied from above with ...
+              Serial.println("Snap in 3 secs...");
+              delay(3000);
+
+              if (! cam.takePicture()) 
+              Serial.println("Failed to snap!");
+              else 
+              Serial.println("Picture taken!");
+  
+  
+  
+            // Open the file for writing
+            imgFile = SD.open(filename, FILE_WRITE);
+
+            // Get the size of the image (frame) taken  
+            uint16_t jpglen = cam.frameLength();
+            Serial.print("Storing ");
+            Serial.print(jpglen, DEC);
+            Serial.print(" byte image.");
+
+            int32_t time = millis();
+            pinMode(8, OUTPUT);
+            // Read all the data up to # bytes!
+            byte wCount = 0; // For counting # of writes
+            while (jpglen > 0) {
+                     // read 32 bytes at a time;
                      uint8_t *buffer;
-                     uint8_t bytesToRead = min(64, jpglen); 
+                     uint8_t bytesToRead = min(64, jpglen); // change 32 to 64 for a speedup but may not work with all setups!
                      buffer = cam.readPicture(bytesToRead);
                      imgFile.write(buffer, bytesToRead);
-                     if(++wCount >= 64) { 
-                          Serial.print('--------->');
+                     if(++wCount >= 64) { // Every 2K, give a little feedback so it doesn't appear locked up
+                          Serial.print('.');
                           wCount = 0;
                      }
+                     //Serial.print("Read ");  Serial.print(bytesToRead, DEC); Serial.println(" bytes");
                      jpglen -= bytesToRead;
             }
             imgFile.close();
-            
+            //imgFile=(File)"";
             time = millis() - time;
             Serial.println("done!");
-            Serial.print(time); 
-            Serial.println(" ms elapsed");  
-    
+            Serial.print(time); Serial.println(" ms elapsed");  
 
+
+
+}
+
+
+void sensors(){
    // Sensor data:
-
-
-
-     
-    dataFile = SD.open("qqqqq.txt", FILE_WRITE);
+   Serial.println("Processing.....");
+    
+    dataFile = SD.open("datafile.txt", FILE_WRITE);
 // Lux
     // Simple data read example. Just read the infrared, fullspecrtrum diode 
     // or 'visible' (difference between the two) channels.
@@ -258,15 +323,9 @@ void loop() {
     dataFile.println();
     dataFile.println();
     dataFile.println();
-
+    Serial.println("finished.");
     
     dataFile.close(); 
-     delay(1000);
-}
 
-//Change celsius to Fahrenheit
-double CtF (double celsius) {
-  return ((celsius * 1.8) + 32);
 }
-
 
