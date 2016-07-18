@@ -147,9 +147,6 @@ void setup() {
   //for (int i = 0; i < 5; i++) {
               
 //}
- Serial.println("Please select as follows:");
- Serial.println(" -a- for camera");
- Serial.println(" -b- for sensors");
 }
 int i=0;
 File imgFile;
@@ -158,47 +155,6 @@ File dataFile;
 
 void loop() {
      
-    if (Serial.available() > 0) {
-     
-       int inByte = Serial.read();
-    switch (inByte) {
-       case 'a':
-         //digitalWrite(2, HIGH);
-         //Serial.println("It was A!");
-         camera();
-         break;
-       case 'b':
-         //digitalWrite(3, HIGH);
-         //Serial.println("It was B!");
-         sensors();
-         break;
-       case 'c':
-         //digitalWrite(4, HIGH);
-         Serial.println("It was C!");
-         break;
-       case 'd':
-         //digitalWrite(5, HIGH);
-         Serial.println("It was D!");
-         break;
-       case 'e':
-         //digitalWrite(6, HIGH);
-         Serial.println("It was E!");
-         break;
-       default:
-          Serial.println("It was incorrect!");
-  }
-}           
-
-  
-     delay(1000);
-}
-
-//Change celsius to Fahrenheit
-double CtF (double celsius) {
-  return ((celsius * 1.8) + 32);
-}
-
-void camera(){
               cam.begin();
               cam.setImageSize(VC0706_640x480);
               char filename[13];
@@ -238,13 +194,13 @@ void camera(){
             Serial.print(time); 
             Serial.println(" ms elapsed");  
     
-  
-}
 
-void sensors(){
    // Sensor data:
-    
-    dataFile = SD.open("loggerData.txt", FILE_WRITE);
+
+
+
+     
+    dataFile = SD.open("qqqqq.txt", FILE_WRITE);
 // Lux
     // Simple data read example. Just read the infrared, fullspecrtrum diode 
     // or 'visible' (difference between the two) channels.
@@ -305,6 +261,12 @@ void sensors(){
 
     
     dataFile.close(); 
-
+     delay(1000);
 }
+
+//Change celsius to Fahrenheit
+double CtF (double celsius) {
+  return ((celsius * 1.8) + 32);
+}
+
 
