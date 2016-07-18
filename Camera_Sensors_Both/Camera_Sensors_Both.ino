@@ -157,7 +157,6 @@ File dataFile;
 
 
 void loop() {
-     
     if (Serial.available() > 0) {
      
        int inByte = Serial.read();
