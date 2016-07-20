@@ -1,10 +1,12 @@
 #include <Adafruit_VC0706.h>
-#include <SPI.h>
 #include <SD.h>
-#include <Wire.h> //Lux
 #include "TSL2561.h" //Lux
 #include <DHT.h> //Temp/Hum
-#include <SoftwareSerial.h> 
+
+
+//#include <Wire.h> //Lux
+//#include <SoftwareSerial.h> 
+//#include <SPI.h>
 
 
 // comment out this line if using Arduino V23 or earlier
