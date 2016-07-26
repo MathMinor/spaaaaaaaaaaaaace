@@ -1,19 +1,22 @@
-#include <Adafruit_VC0706.h>
-#include <SD.h>
-#include "TSL2561.h" //Lux
-#include <DHT.h> //Temp/Hum
+#include <Adafruit_VC0706.h> //Adafruit TTL JPEG Camera (VC0706 chipset)
+#include <SD.h>              //SD Card
+#include "TSL2561.h"         //Lux
+#include <DHT.h>             //Temp/Hum
 
+//******************************
+//These libraries are          *
+//potentially unneeded         *
+//******************************
+//#include <Wire.h> //Lux      *
+//#include <SoftwareSerial.h>  *
+//#include <SPI.h>             *
+//******************************
 
-//#include <Wire.h> //Lux
-//#include <SoftwareSerial.h> 
-//#include <SPI.h>
-
-
-// comment out this line if using Arduino V23 or earlier
-//#include <SoftwareSerial.h>         
-
-// uncomment this line if using Arduino V23 or earlier
-// #include <NewSoftSerial.h>       
+//What is this arduino version?:
+//~Comment out this line if using Arduino V23 or earlier
+//#include <SoftwareSerial.h>
+//~Uncomment this line if using Arduino V23 or earlier
+//#include <NewSoftSerial.h>
 
 // SD card chip select line varies among boards/shields:
 // Adafruit SD shields and modules: pin 10
@@ -23,21 +26,21 @@
 // Teensy 2.0: pin 0
 // Teensy++ 2.0: pin 20
 
+//Defines:
 #define chipSelect 10
-#define DHTPIN 2     // what pin we're connected to
-#define DHTTYPE DHT22   // DHT 22  (AM2302)
+#define DHTPIN 2        // This is what pin we are connected to
+#define DHTTYPE DHT22   // DHT 22  (AM2302) (Temperature/Humidity Sensor)
 
-TSL2561 tsl(TSL2561_ADDR_FLOAT); //object for lux sensor
+TSL2561 tsl(TSL2561_ADDR_FLOAT); //Object for our lux sensor
 
+DHT dht(DHTPIN, DHTTYPE); // Initialize DHT sensor for normal 16mhz Arduino
 
-DHT dht(DHTPIN, DHTTYPE); //// Initialize DHT sensor for normal 16mhz Arduino
 //Constants
-const int xPin = 0; //Analog A0 Lux
-const int yPin = 1; //Analog A1 Lux
-const int zPin = 2; //Analog A2 Lux
+const int xPin = 0; //Analog A0 Lux sensor
+const int yPin = 1; //Analog A1 Lux sensor
+const int zPin = 2; //Analog A2 Lux sensor
 
 //Variables
-int chk;
 float hum=0;  //Stores humidity value
 float temp=0; //Stores temperature value
 //The minimum and maximum values that came from
