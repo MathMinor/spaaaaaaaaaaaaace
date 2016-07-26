@@ -5,8 +5,6 @@
 // Receives data as an I2C/TWI slave device
 // Refer to the "Wire Master Writer" example for use with this
 
-//#include <Wire.h> //Lux
-//#include "TSL2561.h" //Lux
 #include <DHT.h> //Temp/Hum
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
@@ -18,8 +16,7 @@
 //Can be LOW, FLOAT or HIGH for different addresses
 //FLOAT default
 Adafruit_TSL2561_Unified tsl = Adafruit_TSL2561_Unified(TSL2561_ADDR_FLOAT, 12345);
-//TSL2561 tsl(TSL2561_ADDR_FLOAT); //object for lux sensor
-DHT dht(DHTPIN, DHTTYPE); //// Initialize DHT sensor for normal 16mhz Arduino
+DHT dht(DHTPIN, DHTTYPE); // Initialize DHT sensor for normal 16mhz Arduino
 
 //Variables
 void setup() {
@@ -31,7 +28,8 @@ void setup() {
 }
 
 void loop() {
-    delay(100);
+    getLight();
+    delay(1000);
 }
 
 // function that executes whenever data is received from master
@@ -41,27 +39,29 @@ void receiveEvent(int howMany) {
         char c = Wire.read();       // receive byte as a character
         Serial.print(c);            // print the character
     }
+    Serial.flush();
     int x = Wire.read();           // receive byte as an integer
     Serial.println(x);             // print the integer
     Serial.println("");
 
     switch (x) {
-       case 3:
+       case 1:
          getTemp();
          break;
        case 2:
          getHumidity();
          break;
-       case 1:
+       case 3:
          getLight();
          break;
        default:
-          Serial.println("Signal Ignored");
-          Serial.println("");
+         Serial.println("Signal Ignored");
+         Serial.println("");
   }
 }
 
 void getTemp() {
+    Serial.flush();
     Serial.println("Grabbing temperature.....");
     Serial.print("Temperature: ");
     Serial.print(dht.readTemperature(true));
@@ -74,20 +74,23 @@ void getTemp() {
 }
 
 void getHumidity () {
+    Serial.flush();
     Serial.println("Grabbing humidity.....");
-    float hum = dht.readHumidity();
     Serial.print("Humidity: ");
-    Serial.print(hum);
+    Serial.print(dht.readHumidity());
     Serial.println("% ");
     Serial.println("done.");
     Serial.println("");
 }
 
 void getLight() {
-  Serial.println("------------------------------------");
-  Serial.print  ("Gain:         "); Serial.println("Auto");
-  Serial.print  ("Timing:       "); Serial.println("13 ms");
-  Serial.println("------------------------------------");
+  /*Serial.println("----");
+  Serial.print  ("Gain: ");
+  Serial.println("Auto");
+  Serial.print  ("Timing: ");
+  Serial.println("13 ms");
+  Serial.println("----");*/
+  //Serial.flush();
   
   if(!tsl.begin()) {
     Serial.println("Sensor not found!");  
@@ -96,15 +99,17 @@ void getLight() {
     tsl.setIntegrationTime(TSL2561_INTEGRATIONTIME_13MS);
     sensors_event_t event;
     tsl.getEvent(&event);
- 
     /* Display the results (light is measured in lux) */
     if (event.light) {
       Serial.print(event.light); Serial.println(" lux");
+      Serial.flush();
     } else {
       /* If event.light = 0 lux the sensor is probably saturated
       and no reliable data could be generated! */
-      Serial.println("Sensor overloaded or saturated!");
+      Serial.println("Sensor overloaded, saturated or not found!");
+      Serial.flush();
     }
   }
   Serial.println("");
+  Serial.flush();
 }
