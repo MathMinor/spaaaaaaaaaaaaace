@@ -16,11 +16,6 @@ TSL2561 tsl(TSL2561_ADDR_FLOAT); //object for lux sensor
 DHT dht(DHTPIN, DHTTYPE); //// Initialize DHT sensor for normal 16mhz Arduino
 
 //Variables
-uint16_t y; //Lux
-uint32_t lum; //Lux
-uint16_t ir, full; //Lux
-
-
 void setup() {
     Wire.begin(8);                // join i2c bus with address #8
     Wire.onReceive(receiveEvent); // register event
@@ -86,11 +81,11 @@ void getLight() {
     // Lux
     // More advanced data read example. Read 32 bits with top 16 bits IR, bottom 16 bits full spectrum
     // That way you can do whatever math and comparisons you want!
-    y = tsl.getLuminosity(TSL2561_VISIBLE);
-    lum = tsl.getFullLuminosity();
-    ir = lum >> 16;
-    full = lum & 0xFFFF;
-
+    uint16_t y = tsl.getLuminosity(TSL2561_VISIBLE);
+    uint32_t lum = tsl.getFullLuminosity();
+    uint16_t ir = lum >> 16;
+    uint16_t full = lum & 0xFFFF; 
+    
     Serial.print("IR: ");
     Serial.println(ir);
     Serial.print(" Full: ");
