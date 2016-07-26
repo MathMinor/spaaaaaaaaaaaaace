@@ -5,10 +5,6 @@
 // Receives data as an I2C/TWI slave device
 // Refer to the "Wire Master Writer" example for use with this
 
-// Created 29 March 2006
-
-// This example code is in the public domain.
-
 #include <Wire.h> //Lux
 #include "TSL2561.h" //Lux
 #include <DHT.h> //Temp/Hum
@@ -20,8 +16,9 @@ TSL2561 tsl(TSL2561_ADDR_FLOAT); //object for lux sensor
 DHT dht(DHTPIN, DHTTYPE); //// Initialize DHT sensor for normal 16mhz Arduino
 
 //Variables
-float hum=0;  //Stores humidity value
-float temp=0; //Stores temperature value
+uint16_t y; //Lux
+uint32_t lum; //Lux
+uint16_t ir, full; //Lux
 
 
 void setup() {
@@ -29,7 +26,7 @@ void setup() {
     Wire.onReceive(receiveEvent); // register event
     Serial.begin(9600);            // start serial for output
     // Get light ready
-    pinMode(12, OUTPUT);
+    //pinMode(12, OUTPUT);
 }
 
 void loop() {
@@ -45,6 +42,7 @@ void receiveEvent(int howMany) {
     }
     int x = Wire.read();           // receive byte as an integer
     Serial.println(x);             // print the integer
+    Serial.println("");
 
     if (x == 1) {
        getTemp();
@@ -54,49 +52,55 @@ void receiveEvent(int howMany) {
        getLight();
     } else {
         Serial.println("Signal Ignored");
+        Serial.println("");
     }
 }
 
 void getTemp() {
     Serial.println("Grabbing temperature.....");
-    temp = dht.readTemperature();
-    Serial.println("Temp: ");
-    Serial.println(CtF(temp));
-    Serial.println(" Fahrenheit ");
+    float temp = dht.readTemperature(true); //Stores temperature value
+    float hi = dht.computeHeatIndex(temp, dht.readHumidity());  //Stores heat index value
+    Serial.print("Temperature: ");
+    Serial.print(temp);
+    Serial.println("˚ Fahrenheit.");
+    Serial.print("Heat index: ");
+    Serial.print(hi);
+    Serial.println(" *C.");
     Serial.println("done.");
+    Serial.println("");
 }
 
 void getHumidity () {
     Serial.println("Grabbing humidity.....");
-    hum = dht.readHumidity();
-    Serial.println(" Humidity: ");
-    Serial.println(hum);
+    float hum = dht.readHumidity();
+    Serial.print("Humidity: ");
+    Serial.print(hum);
     Serial.println("% ");
     Serial.println("done.");
+    Serial.println("");
 }
 
 void getLight() {
     Serial.println("Grabbing light levels.....");
     
-    uint16_t x = tsl.getLuminosity(TSL2561_VISIBLE);
-
     // Lux
     // More advanced data read example. Read 32 bits with top 16 bits IR, bottom 16 bits full spectrum
     // That way you can do whatever math and comparisons you want!
-    uint32_t lum = tsl.getFullLuminosity();
-    uint16_t ir, full;
+    y = tsl.getLuminosity(TSL2561_VISIBLE);
+    lum = tsl.getFullLuminosity();
     ir = lum >> 16;
     full = lum & 0xFFFF;
 
-    Serial.println("IR: ");
+    Serial.print("IR: ");
     Serial.println(ir);
-    Serial.println(" Full: ");
+    Serial.print(" Full: ");
     Serial.println(full);
-    Serial.println(" Visible: ");
+    Serial.print(" Visible: ");
     Serial.println(full - ir);
-    Serial.println("Lux: ");
+    Serial.print("Lux: ");
     Serial.println(tsl.calculateLux(full, ir));
     Serial.println("done.");
+    Serial.println("");
 }
 
 //Turn celsius to fahrenheit
