@@ -102,8 +102,3 @@ void getLight() {
     Serial.println("done.");
     Serial.println("");
 }
-
-//Turn celsius to fahrenheit
-double CtF (double celsius) {
-    return ((celsius * 1.8) + 32);
-}
