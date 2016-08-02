@@ -7,15 +7,15 @@
 
 #include <DHT.h> //Temp/Hum
 #include <Wire.h>
-#include <Adafruit_Sensor.h>
-#include <Adafruit_TSL2561_U.h>
+//#include <Adafruit_Sensor.h>
+//#include <Adafruit_TSL2561_U.h>
 
 #define DHTPIN 2     // what pin we're connected to
 #define DHTTYPE DHT22   // DHT 22  (AM2302)
 
 //Can be LOW, FLOAT or HIGH for different addresses
 //FLOAT default
-Adafruit_TSL2561_Unified tsl = Adafruit_TSL2561_Unified(TSL2561_ADDR_FLOAT, 12345);
+//Adafruit_TSL2561_Unified tsl = Adafruit_TSL2561_Unified(TSL2561_ADDR_FLOAT, 12345);
 DHT dht(DHTPIN, DHTTYPE); // Initialize DHT sensor for normal 16mhz Arduino
 
 //Variables
@@ -28,31 +28,27 @@ void setup() {
 }
 
 void loop() {
-    getLight();
-    delay(1000);
+    delay(200);
 }
 
 // function that executes whenever data is received from master
 // this function is registered as an event, see setup()
 void receiveEvent(int howMany) {
-    while (1 < Wire.available()) { // loop through all but the last
+    /*while (1 < Wire.available()) { // loop through all but the last
         char c = Wire.read();       // receive byte as a character
         Serial.print(c);            // print the character
     }
-    Serial.flush();
+    Serial.flush();*/
     int x = Wire.read();           // receive byte as an integer
-    Serial.println(x);             // print the integer
+    //Serial.println(x);             // print the integer
     Serial.println("");
 
     switch (x) {
-       case 1:
+       case 2:
          getTemp();
          break;
-       case 2:
-         getHumidity();
-         break;
        case 3:
-         getLight();
+         getHumidity();
          break;
        default:
          Serial.println("Signal Ignored");
@@ -83,13 +79,13 @@ void getHumidity () {
     Serial.println("");
 }
 
-void getLight() {
+/*void getLight() {
   /*Serial.println("----");
   Serial.print  ("Gain: ");
   Serial.println("Auto");
   Serial.print  ("Timing: ");
   Serial.println("13 ms");
-  Serial.println("----");*/
+  Serial.println("----");
   //Serial.flush();
   
   if(!tsl.begin()) {
@@ -99,17 +95,17 @@ void getLight() {
     tsl.setIntegrationTime(TSL2561_INTEGRATIONTIME_13MS);
     sensors_event_t event;
     tsl.getEvent(&event);
-    /* Display the results (light is measured in lux) */
+    // Display the results (light is measured in lux) 
     if (event.light) {
       Serial.print(event.light); Serial.println(" lux");
       Serial.flush();
     } else {
-      /* If event.light = 0 lux the sensor is probably saturated
-      and no reliable data could be generated! */
+      // If event.light = 0 lux the sensor is probably saturated
+      //and no reliable data could be generated!
       Serial.println("Sensor overloaded, saturated or not found!");
       Serial.flush();
     }
   }
   Serial.println("");
   Serial.flush();
-}
+}*/
