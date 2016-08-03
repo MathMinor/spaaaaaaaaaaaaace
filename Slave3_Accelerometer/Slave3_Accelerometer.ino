@@ -44,20 +44,18 @@ void receiveEvent(int howMany) {
 
 void getAccel() {
   // print the sensor values:
-  Serial.print("X: ");
   x=analogRead(xpin);
+  y=analogRead(ypin);
+  z=analogRead(zpin);
+  g = sqrt((x * x) + (y * y) + (z * z));
+  Serial.print("X: ");
   Serial.print(x);
   // print a tab between values:
   Serial.print("\t");
   Serial.print("Y: ");
-  y=analogRead(ypin);
-  Serial.print(y);
   // print a tab between values:
   Serial.print("\t");
   Serial.print("Z: ");
-  z=analogRead(zpin);
-  Serial.print(z);
-  g = sqrt((x * x) + (y * y) + (z * z));
   Serial.print("\t");
   Serial.print("G-Force: ");
   Serial.print(g);
