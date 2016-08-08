@@ -29,6 +29,8 @@ void setup() {
     //pinMode(12, OUTPUT);  
 } 
 
+char out[5];
+
 void loop() {
     delay(200);
 }
@@ -76,11 +78,14 @@ void getTemp() {
 }
 
 void getHumidity () {
+
     Serial.flush();
     Serial.println("Grabbing humidity.....");
     Serial.print("Humidity: ");
-    Serial.print(dht.readHumidity());
-    Serial.println("% ");
+    Serial.print(dht.readHumidity()); Serial.println("% ");
+    Wire.beginTransmission(6);
+    Wire.write(dtostrf(dht.readHumidity(),5,2,out));
+    Wire.endTransmission();
     Serial.println("done.");
     Serial.println("");
 }
