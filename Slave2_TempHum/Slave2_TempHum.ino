@@ -24,7 +24,7 @@ void setup() {
     //pinMode(12, OUTPUT);  
 } 
 
-char out[5];
+byte arr[4];
 
 void loop() {
     delay(200);
@@ -76,11 +76,20 @@ void getHumidity () {
 
     Serial.flush();
     Serial.println("Grabbing humidity.....");
+    float f = dht.readHumidity();
     Serial.print("Humidity: ");
-    Serial.print(dht.readHumidity()); Serial.println("% ");
+    Serial.print(f); Serial.println("% ");
+
+    //Transfer this data to the SD Card Arduino
     Wire.beginTransmission(6);
-    Wire.write(dtostrf(dht.readHumidity(),5,2,out));
+
+    //You must convert the float returned from dht.readHumidity() to bytes
+    //byte bytes[4]; //to hold the bytes
+    //f2B(f, arr); //Float 2 Bytes function defined below
+    Wire.write(fTBA(f),4);
+    
     Wire.endTransmission();
+    
     Serial.println("done.");
     Serial.println("");
 }
@@ -124,3 +133,15 @@ void configureSensor(void)
   // tsl.setIntegrationTime(TSL2561_INTEGRATIONTIME_402MS);  /* 16-bit data but slowest conversions */
 }
 
+//attempt to convert float to bytes
+byte* fTBA(float f) {
+    byte* ret = malloc(4 * sizeof(byte));
+    unsigned int asInt = *((int*)&f);
+
+    int i;
+    for (i = 0; i < 4; i++) {
+        ret[i] = (asInt >> 8 * i) & 0xFF;
+    }
+
+    return ret;
+}

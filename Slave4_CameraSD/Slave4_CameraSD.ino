@@ -17,20 +17,25 @@ void setup() {
   }
 }
 
-File dataFile;
-String data = "";
+//File dataFile;
+float data;
+byte data2 [4];
+int i;
 
 void loop() {
     //To be continued
 }
 
 void receiveEvent(int howMany){
-    data = "";
     while(Wire.available()) {
-      data += (char)Wire.read();
+      //data += (byte)Wire.read();
+      //i = 0;
+      //data2[i] = Wire.read();
+      //i++;
+      Serial.println(Wire.read(),HEX);
     }
-    dataFile = SD.open("testlog.txt", FILE_WRITE);
-    dataFile.print(data);
+    //dataFile = SD.open("testlog.txt", FILE_WRITE);
+    //Serial.println(data);
 }
 
 void getPicture() {
