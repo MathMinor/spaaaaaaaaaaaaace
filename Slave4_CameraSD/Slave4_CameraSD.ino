@@ -17,7 +17,7 @@ void setup() {
   }
 }
 
-File myFile;
+File myFile1, myFile2, myFile3;
 int data, x;
 
 void loop() {
@@ -34,21 +34,21 @@ void receiveEvent(int howMany){
     switch (x) {
        case 1:
          //This is light
-         myFile = SD.open("lightlog.txt", FILE_WRITE);
-         myFile.print(data); myFile.println("%");
-         myFile.close();
+         myFile1 = SD.open("lightlog.txt", FILE_WRITE);
+         myFile1.print(data); myFile.println("%");
+         myFile1.close();
          break;
        case 2:
          //This is temperature
-         myFile = SD.open("templog.txt", FILE_WRITE);
-         myFile.print(data); myFile.println(" F");
-         myFile.close();
+         myFile2 = SD.open("templog.txt", FILE_WRITE);
+         myFile2.print(data); myFile.println(" F");
+         myFile2.close();
          break;
        case 3:
          //This is humidity
-         myFile = SD.open("humidlog.txt", FILE_WRITE);
-         myFile.print(data); myFile.println(" lux");
-         myFile.close();
+         myFile3 = SD.open("humidlog.txt", FILE_WRITE);
+         myFile3.print(data); myFile.println(" lux");
+         myFile3.close();
          break;
        case 4:
          getPicture();
