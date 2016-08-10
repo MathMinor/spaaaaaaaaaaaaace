@@ -1,3 +1,5 @@
+//Master, responsible for sending commands and the Tranceiver.
+
 #include <Wire.h> //Lux
 
 void setup() {
