@@ -35,19 +35,19 @@ void receiveEvent(int howMany){
        case 1:
          //This is light
          myFile1 = SD.open("lightlog.txt", FILE_WRITE);
-         myFile1.print(data); myFile.println("%");
+         myFile1.print(data); myFile1.println(" lux");
          myFile1.close();
          break;
        case 2:
          //This is temperature
          myFile2 = SD.open("templog.txt", FILE_WRITE);
-         myFile2.print(data); myFile.println(" F");
+         myFile2.print(data); myFile2.println(" F");
          myFile2.close();
          break;
        case 3:
          //This is humidity
          myFile3 = SD.open("humidlog.txt", FILE_WRITE);
-         myFile3.print(data); myFile.println(" lux");
+         myFile3.print(data); myFile3.println(" lux");
          myFile3.close();
          break;
        case 4:

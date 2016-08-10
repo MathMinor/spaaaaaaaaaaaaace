@@ -24,8 +24,6 @@ void setup() {
     //pinMode(12, OUTPUT);  
 } 
 
-byte arr[4];
-
 void loop() {
     delay(200);
 }
