@@ -17,10 +17,8 @@ void setup() {
   }
 }
 
-//File dataFile;
-float data;
-byte data2 [4];
-int i;
+File myFile;
+int data, x;
 
 void loop() {
     //To be continued
@@ -28,14 +26,36 @@ void loop() {
 
 void receiveEvent(int howMany){
     while(Wire.available()) {
-      //data += (byte)Wire.read();
-      //i = 0;
-      //data2[i] = Wire.read();
-      //i++;
-      Serial.println(Wire.read(),HEX);
+      x = Wire.read();
+      data = Wire.read();
+      Serial.print(x); Serial.print(" "); Serial.println(data);
     }
-    //dataFile = SD.open("testlog.txt", FILE_WRITE);
-    //Serial.println(data);
+    
+    switch (x) {
+       case 1:
+         //This is light
+         myFile = SD.open("lightlog.txt", FILE_WRITE);
+         myFile.print(data); myFile.println("%");
+         myFile.close();
+         break;
+       case 2:
+         //This is temperature
+         myFile = SD.open("templog.txt", FILE_WRITE);
+         myFile.print(data); myFile.println(" F");
+         myFile.close();
+         break;
+       case 3:
+         //This is humidity
+         myFile = SD.open("humidlog.txt", FILE_WRITE);
+         myFile.print(data); myFile.println(" lux");
+         myFile.close();
+         break;
+       case 4:
+         getPicture();
+       default:
+         Serial.println("Signal Ignored");
+         Serial.println("");
+  }
 }
 
 void getPicture() {

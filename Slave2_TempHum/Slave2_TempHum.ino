@@ -65,6 +65,16 @@ void getTemp() {
     Serial.print("Temperature: ");
     Serial.print(dht.readTemperature(true));
     Serial.println("˚ Fahrenheit.");
+    
+    Wire.beginTransmission(6);
+    //You must convert the float returned from dht.readHumidity() to bytes
+    //Float to bytes function defined below
+    //Wire.write(fTBA(f),4);
+    Serial.println((int)dht.readTemperature());
+    Wire.write(2);
+    Wire.write((int)dht.readTemperature());
+    Wire.endTransmission();
+    
     Serial.print("Heat index: ");
     Serial.print(dht.computeHeatIndex(dht.readTemperature(true), dht.readHumidity()));
     Serial.println(" *C.");
@@ -82,12 +92,9 @@ void getHumidity () {
 
     //Transfer this data to the SD Card Arduino
     Wire.beginTransmission(6);
-
-    //You must convert the float returned from dht.readHumidity() to bytes
-    //byte bytes[4]; //to hold the bytes
-    //f2B(f, arr); //Float 2 Bytes function defined below
-    Wire.write(fTBA(f),4);
-    
+    Serial.println((int)dht.readHumidity());
+    Wire.write(3);
+    Wire.write((int)dht.readHumidity());
     Wire.endTransmission();
     
     Serial.println("done.");
@@ -111,6 +118,13 @@ void getLight() {
   /* Display the results (light is measured in lux) */
   if (event.light) {
     Serial.print(event.light); Serial.println(" lux");
+    
+    Wire.beginTransmission(6);
+    Serial.println((int)event.light);
+    Wire.write(1);
+    Wire.write((int)event.light);
+    Wire.endTransmission();
+    
   } else {
     /* If event.light = 0 lux the sensor is probably saturated
        and no reliable data could be generated! */
