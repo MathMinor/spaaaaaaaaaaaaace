@@ -3,19 +3,16 @@
 #include <Wire.h>
 
 //Variables
+bool accel = false;
 const int groundpin = 18;             // analog input pin 4 -- ground
 const int powerpin = 19;              // analog input pin 5 -- voltage
 const int xpin = A0;                  // x-axis of the accelerometer
 const int ypin = A1;                  // y-axis
 const int zpin = A2;                  // z-axis (only on 3-axis models)
 float x, y, z, g;
-//float avg_x=0; Never used
-//float avg_y=0; Never used
-//float avg_z=0; Never used
-
 
 void setup() {
-    Wire.begin(4);                // join i2c bus with address #8
+    Wire.begin(7);                // join i2c bus with address #4
     Wire.onReceive(receiveEvent); // register event
     Serial.begin(9600);            // start serial for output
     pinMode(groundpin, OUTPUT);
@@ -27,13 +24,29 @@ void setup() {
 }
 
 void loop() {
-    delay(200);
+  if (accel) {
+    getAccel();
+  }
+    delay(500);
 }
 
 // function that executes whenever data is received from master
 // this function is registered as an event, see setup()
 void receiveEvent(int howMany) {
-  getAccel();
+  int x;
+  while(Wire.available()) {
+    x = Wire.read();
+    Serial.print(x);
+  }
+
+  switch (x) {
+    case 1:
+      accel = true;
+      break;
+    default:
+      Serial.println("Signal Ignored");
+      Serial.println(" ");
+  }
   Wire.flush();
 }
 
@@ -48,13 +61,29 @@ void getAccel() {
   // print a tab between values:
   Serial.print("\t");
   Serial.print("Y: ");
+  Serial.print(y);
   // print a tab between values:
   Serial.print("\t");
   Serial.print("Z: ");
+  Serial.print(z);
   Serial.print("\t");
   Serial.print("G-Force: ");
   Serial.print(g);
   Serial.println();
+
+  Wire.beginTransmission(6);
+  Wire.write(5);
+  Serial.println((int)x);
+  Wire.write((int)x);
+  Serial.println((int)y);
+  Wire.write((int)y);
+  Serial.println((int)z);
+  Wire.write((int)z);
+  Serial.println((int)g);
+  Wire.write((int)g);
+  Wire.endTransmission();
+  accel = false;
+  
 }
 
 /*
